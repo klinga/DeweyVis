@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import re
 
 
 from dewey import DEWEY_MAIN, DEWEY_HUNDREDS, DEWEY_THOUSANDS
