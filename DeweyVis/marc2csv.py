@@ -42,7 +42,7 @@ def marc2csv(fh_in, fh_out):
                     callNo = None
                 if '008' in record:
                     pCountry = record['008'].value()[15:18]
-                    pDate = record['008'].value()[07:11]
+                    pDate = record['008'].value()[7:11]
                     catSource = record['008'].value()[39]
                     lang = record['008'].value()[35:38]
                 else:
