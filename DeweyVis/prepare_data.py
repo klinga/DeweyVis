@@ -52,15 +52,36 @@ def find_thousands(value):
         return np.NaN
 
 
-fh = './files/callno.csv'
+fh = './files/bpl_171220_raw.csv'
 
-df = pd.read_csv(fh, header=None, names=['id', 'callno'])
-df['thousands'] = df['callno'].str.extract(r'(\d{3})', expand=False)
-df['thousands_lbl'] = df['thousands'].apply(find_thousands)
-df['main'] = df['thousands'].apply(find_main)
-df['main_lbl'] = df['thousands'].apply(find_main_lbl)
-df['hundreds'] = df['thousands'].apply(find_hundreds)
-df['hundreds_lbl'] = df['thousands'].apply(find_hundreds_lbl)
+reader = pd.read_csv(
+    fh, header=0,
+    parse_dates=[
+        'bDateCreated', 'bDateCataloged',
+        'iDateCreated', 'iLastCheckoutDate'],
+        dtype={'pDate': str},
+        iterator=True,
+        na_values=['  -  -  ', ],
+        chunksize=10**4)
+# df_test = reader.next()
+# print df_test.head(10)
 
-df = df[df['main'].notnull()]
-print df.head(10)
+for chunk in reader:
+    # original cataloging agency
+    df_cat = chunk['catAgent']
+    print df_cat.head()
+
+
+# df['thousands'] = df['callno'].str.extract(r'(\d{3})', expand=False)
+# df['thousands_lbl'] = df['thousands'].apply(find_thousands)
+# df['main'] = df['thousands'].apply(find_main)
+# df['main_lbl'] = df['thousands'].apply(find_main_lbl)
+# df['hundreds'] = df['thousands'].apply(find_hundreds)
+# df['hundreds_lbl'] = df['thousands'].apply(find_hundreds_lbl)
+
+# df = df[df['main'].notnull()]
+# df.to_csv('./files/bpl_dewey_cat.csv')
+# df_main = df[['main', 'main_lbl']]
+# df_main = df_main.groupby('main')['main_lbl'].value_counts()
+# df_main.to_csv('./files/bpl_main_classes.csv')
+

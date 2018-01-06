@@ -31,6 +31,9 @@ def marc2csv(fh_in, fh_out):
         for record in reader:
             counter += 1
             try:
+                empty_bib = True
+                row = []
+
                 bId = record['907']['a'][2:-1]
                 bDateCreated = record['907']['c']
                 bDateCataloged = record['907']['b']
@@ -54,10 +57,17 @@ def marc2csv(fh_in, fh_out):
                     catAgent = record['040']['a']
                 else:
                     catAgent = None
+                row.extend([
+                    bId, bDateCreated, bDateCataloged,
+                    bStatus, bItemCount,
+                    callNo, pCountry, pDate, catSource,
+                    lang, catAgent])
                 if '945' in record:
                     items = record.get_fields('945')
                     for item in items:
                         if item.indicators == [' ', ' ']:
+                            new_row = row[:]
+                            empty_bib = False
                             iId = item['y'][2:-1]
                             iDateCreated = item['z']
                             iStatus = item['s']
@@ -65,15 +75,13 @@ def marc2csv(fh_in, fh_out):
                             iCheckout = item['u']
                             iRenewal = item['v']
                             iLastCheckoutDate = item['k']
-                            row = [
-                                bId, bDateCreated, bDateCataloged,
-                                bStatus, bItemCount,
-                                callNo, pCountry, pDate, catSource,
-                                lang, catAgent,
+                            new_row.extend([
                                 iId, iDateCreated, iStatus, iLocation,
-                                iCheckout, iRenewal, iLastCheckoutDate
-                            ]
-                            save2csv(fh_out, row)
+                                iCheckout, iRenewal, iLastCheckoutDate])
+                            save2csv(fh_out, new_row)
+                if empty_bib:
+                    row.extend([None for x in range(7)])
+                    save2csv(fh_out, row)
 
             except Exception as e:
                 skipped_bibs += 1
