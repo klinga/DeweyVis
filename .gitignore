@@ -97,3 +97,10 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# sqlite
+.db
+.db-journal
+
+# temporary / testing files
+temp.py
