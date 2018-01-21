@@ -26,7 +26,7 @@ class Bib(Base):
     items = relationship('Item', cascade='all, delete-orphan')
 
     def __repr__(self):
-        return "<Bibs(bid='%s', dateCreated='%s', dateCataloged='%s', " \
+        return "<Bib(bid='%s', dateCreated='%s', dateCataloged='%s', " \
             "status='%s', itemCount='%s', callNo='%s', country='%s', " \
             "lang='%s', catSource='%s', catAgency='%s')>" % (
                 self.id, self.dateCreated, self.dateCataloged,
@@ -46,7 +46,7 @@ class Item(Base):
     lastCheckout = Column(String)
 
     def __repr__(self):
-        return "<Items(iid='%s', dateCreated='%s', status='%s', " \
+        return "<Item(iid='%s', dateCreated='%s', status='%s', " \
             "location='%s', checkout='%s', renewal='%s', " \
             "lastCheckout='%s')>" % (
                 self.iid, self.dateCreated, self.status,
