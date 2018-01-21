@@ -12,25 +12,25 @@ with open(fh, 'r') as csvfile:
     reader = csv.reader(csvfile, encoding='utf-8')
     print list(enumerate(reader.next()))
 
-    # for row in reader:
-    for x in range(5):
-        row = reader.next()
+    for row in reader:
+    # for x in range(5):
+        # row = reader.next()
         with session_scope() as session:
             bstatus = dict(
                 code=row[3])
-            insert_or_ignore(session, Bstatus, **bstatus)
+            bstatus = insert_or_ignore(session, Bstatus, **bstatus)
             country = dict(
                 code=row[6])
-            insert_or_ignore(session, Country, **country)
+            country = insert_or_ignore(session, Country, **country)
             lang = dict(
-                code=row[8])
-            insert_or_ignore(session, Lang, **lang)
-            catSrc = dict(
                 code=row[9])
-            insert_or_ignore(session, CatSource, **catSrc)
+            lang = insert_or_ignore(session, Lang, **lang)
+            catSrc = dict(
+                code=row[8])
+            catSrc = insert_or_ignore(session, CatSource, **catSrc)
             catAgn = dict(
                 code=row[10])
-            insert_or_ignore(session, CatAgency, **catAgn)
+            catAgn = insert_or_ignore(session, CatAgency, **catAgn)
 
             session.flush()
 
@@ -44,16 +44,16 @@ with open(fh, 'r') as csvfile:
                 cid=country.cid,
                 pubDate=row[7],
                 laid=lang.laid,
-                csid=catSrc.casid,
+                csid=catSrc.csid,
                 caid=catAgn.caid)
             insert_or_ignore(session, Bib, **bib)
 
             iStatus = dict(
                 code=row[13])
-            insert_or_ignore(session, Istatus, **iStatus)
+            iStatus = insert_or_ignore(session, Istatus, **iStatus)
             loc = dict(
                 code=row[14])
-            insert_or_ignore(session, Location, **loc)
+            loc = insert_or_ignore(session, Location, **loc)
 
             session.flush()
 

@@ -90,7 +90,7 @@ class Item(Base):
     bid = Column(Integer, ForeignKey('bib.bid'), nullable=False)
     dateCreated = Column(String)
     isid = Column(Integer, ForeignKey('iStatus.isid'))
-    location = Column(Integer, ForeignKey('location.loid'))
+    loid = Column(Integer, ForeignKey('location.loid'))
     checkout = Column(Integer)
     renewal = Column(Integer)
     lastCheckout = Column(String)
@@ -132,7 +132,6 @@ class DataAccessLayer:
 
     def connect(self):
         self.engine = create_engine(self.conn_string)
-        Base.metadata.create_all(self.engine)
         self.Session = sessionmaker(bind=self.engine)
 
 
@@ -141,30 +140,29 @@ dal = DataAccessLayer()
 
 @contextmanager
 def session_scope():
+    dal.connect()
     session = dal.Session()
     try:
         yield session
         session.commit()
     except:
+        session.rollback()
         raise
     finally:
         session.close()
 
 
-def insert_or_ignore_orm(session, model, **kwargs):
+def insert_or_ignore(session, model, **kwargs):
     instance = session.query(model).filter_by(**kwargs).first()
     if not instance:
         instance = model(**kwargs)
         session.add(instance)
-
-
-def insert_or_ignore_core(session, ins):
-
-
-
+    return instance
 
 
 if __name__ == '__main__':
     # create datastore schema before inserting data
     dal.connect()
+    Base.metadata.create_all(dal.engine)
+
 
